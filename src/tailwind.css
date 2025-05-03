@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+.mdc-notched-outline__notch {
+  border-style: none;
+}
