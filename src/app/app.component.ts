@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { FieldSettingsComponent } from './components/field-settings/field-settings.component';
+import { FormElementsMenuComponent } from './components/form-elements-menu/form-elements-menu.component';
+import { MainCanvasComponent } from './components/main-canvas/main-canvas.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  template: `
-    <h1>Welcome to {{ title }}!</h1>
-    <h1 class="text-3xl font-bold underline text-red-500">Hello world!</h1>
-    <router-outlet />
-  `,
+  imports: [
+    FormElementsMenuComponent,
+    MainCanvasComponent,
+    FieldSettingsComponent,
+  ],
+  templateUrl: './app.component.html',
   styles: [],
 })
-export class AppComponent {
-  title = 'ng-forms';
-}
+export class AppComponent {}
