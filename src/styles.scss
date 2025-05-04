@@ -22,3 +22,8 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.cdk-drop-list-dragging:not(.elements-menu) {
+  border: 2px solid !important;
+  background-color: lightgray !important;
+}
