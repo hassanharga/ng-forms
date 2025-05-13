@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { FormField } from '../models/field';
 import { FormRow } from '../models/form';
 
@@ -7,7 +7,15 @@ import { FormRow } from '../models/form';
 })
 export class FormService {
   #rows = signal<FormRow[]>([]);
+  // #selectedRowId = signal<string | null>(null);
+  #selectedFieldId = signal<string | null>(null);
+
   rows = this.#rows.asReadonly();
+  selectedField = computed(() =>
+    this.#rows()
+      .flatMap((row) => row.fields)
+      .find((field) => field.id === this.#selectedFieldId()),
+  );
 
   constructor() {
     this.#rows.set([
@@ -66,7 +74,7 @@ export class FormService {
     fieldId: string,
     sourceRowId: string,
     targetRowId: string,
-    targetIndex = -1
+    targetIndex = -1,
   ) {
     const r = [...this.#rows()];
 
@@ -78,7 +86,7 @@ export class FormService {
       if (row.id === sourceRowId) {
         sourceRowIndex = rowIndex;
         sourceFieldIndex = row.fields.findIndex(
-          (field) => field.id === fieldId
+          (field) => field.id === fieldId,
         );
         if (sourceFieldIndex >= 0) {
           fieldToMove = row.fields[sourceFieldIndex];
@@ -90,7 +98,7 @@ export class FormService {
 
     const newRows = [...r];
     const fieldsWithRemovedField = newRows[sourceRowIndex].fields.filter(
-      (field) => field.id !== fieldId
+      (field) => field.id !== fieldId,
     );
     newRows[sourceRowIndex].fields = fieldsWithRemovedField;
 
@@ -100,6 +108,25 @@ export class FormService {
       targetFields.splice(targetIndex, 0, fieldToMove);
       newRows[targetRowIndex].fields = targetFields;
     }
+
+    this.#rows.set(newRows);
+  }
+
+  setSelectedField(fieldId: string | null) {
+    this.#selectedFieldId.set(fieldId);
+  }
+
+  updateField(fieldId: string, data: Partial<FormField>) {
+    const r = this.#rows();
+    const newRows = r.map((row) => ({
+      ...row,
+      fields: row.fields.map((field) => {
+        if (field.id === fieldId) {
+          return { ...field, ...data };
+        }
+        return field;
+      }),
+    }));
 
     this.#rows.set(newRows);
   }

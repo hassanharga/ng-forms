@@ -4,6 +4,7 @@
     matInput
     [type]="field().inputType || 'text'"
     [required]="field().required"
+    [placeholder]="field().placeholder || ''"
   />
   <!-- <mat-error *ngIf="control.invalid && (control.dirty || control.touched)">
     <span *ngIf="control.errors?.required">{{ field.label }} is required</span>

@@ -1,5 +1,9 @@
 <div
   class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:border-black cursor-pointer pt-1"
+  (click)="formService.setSelectedField(field().id)"
+  [class]="
+    formService.selectedField()?.id === field().id ? '!border-black' : ''
+  "
 >
   <div class="flex items-center justify-between mb-1">
     <span class="text-sm"> {{ field().type | titlecase }} </span>
