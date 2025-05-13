@@ -12,4 +12,8 @@ export class FormElementsMenuComponent {
   fieldTypesService = inject(FieldTypesService);
 
   fieldTypes = this.fieldTypesService.getAllFieldTypes();
+
+  noDropAllowed() {
+    return false;
+  }
 }

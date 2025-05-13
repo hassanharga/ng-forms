@@ -28,6 +28,16 @@ export class FormEditorComponent {
       this.formService.addField(newField, rowId, e.currentIndex);
       return;
     }
+
+    const dragData = e.item.data as FormField;
+    const previousRowId = e.previousContainer?.data as string;
+
+    this.formService.moveField(
+      dragData.id,
+      previousRowId,
+      rowId,
+      e.currentIndex
+    );
   }
 
   deleteRow(rowId: string) {

@@ -61,4 +61,46 @@ export class FormService {
     const newRows = this.#rows().filter((row) => row.id !== rowId);
     this.#rows.set(newRows);
   }
+
+  moveField(
+    fieldId: string,
+    sourceRowId: string,
+    targetRowId: string,
+    targetIndex = -1
+  ) {
+    const r = [...this.#rows()];
+
+    let fieldToMove: FormField | undefined;
+    let sourceRowIndex = -1;
+    let sourceFieldIndex = -1;
+
+    r.forEach((row, rowIndex) => {
+      if (row.id === sourceRowId) {
+        sourceRowIndex = rowIndex;
+        sourceFieldIndex = row.fields.findIndex(
+          (field) => field.id === fieldId
+        );
+        if (sourceFieldIndex >= 0) {
+          fieldToMove = row.fields[sourceFieldIndex];
+        }
+      }
+    });
+
+    if (!fieldToMove) return;
+
+    const newRows = [...r];
+    const fieldsWithRemovedField = newRows[sourceRowIndex].fields.filter(
+      (field) => field.id !== fieldId
+    );
+    newRows[sourceRowIndex].fields = fieldsWithRemovedField;
+
+    const targetRowIndex = newRows.findIndex((row) => row.id === targetRowId);
+    if (targetRowIndex >= 0) {
+      const targetFields = [...newRows[targetRowIndex].fields];
+      targetFields.splice(targetIndex, 0, fieldToMove);
+      newRows[targetRowIndex].fields = targetFields;
+    }
+
+    this.#rows.set(newRows);
+  }
 }

@@ -3,6 +3,7 @@
   <div
     class="p-5 pt-2 bg-white rounded-lg border border-dashed border-gray-200"
     cdkDropList
+    [cdkDropListData]="row.id"
     (cdkDropListDropped)="onDropInRow($event, row.id)"
     [cdkDropListOrientation]="'mixed'"
   >
@@ -18,7 +19,18 @@
     </div>
     <div class="flex gap-4 flex-wrap">
       @for (field of row.fields; track field.id) {
-      <app-form-field class="flex-1" [field]="field" />
+      <app-form-field
+        cdkDrag
+        [cdkDragData]="field"
+        class="flex-1"
+        [field]="field"
+      />
+      }@empty {
+      <div
+        class="flex items-center h-15 justify-center w-full border border-dashed border-gray-300 rounded-lg"
+      >
+        Drag and drop form elements here
+      </div>
       }
     </div>
   </div>
