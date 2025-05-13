@@ -46,7 +46,19 @@ export class FormService {
     this.#rows.set(newRows);
   }
 
-  addRow(newRow: FormRow) {
+  addRow() {
+    const newRow: FormRow = {
+      id: crypto.randomUUID(),
+      fields: [],
+    };
     this.#rows.update((rows) => [...rows, newRow]);
+  }
+
+  deletwRow(rowId: string) {
+    if (this.#rows().length === 1) {
+      return;
+    }
+    const newRows = this.#rows().filter((row) => row.id !== rowId);
+    this.#rows.set(newRows);
   }
 }

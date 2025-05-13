@@ -1,12 +1,13 @@
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { Component, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { FieldTypeDefinition, FormField } from '../../../models/field';
 import { FormService } from '../../../services/form.service';
 import { FormFieldComponent } from '../form-field/form-field.component';
 
 @Component({
   selector: 'app-form-editor',
-  imports: [DragDropModule, FormFieldComponent],
+  imports: [DragDropModule, FormFieldComponent, MatIconModule],
   templateUrl: './form-editor.component.html',
   styles: ``,
 })
@@ -27,5 +28,9 @@ export class FormEditorComponent {
       this.formService.addField(newField, rowId, e.currentIndex);
       return;
     }
+  }
+
+  deleteRow(rowId: string) {
+    this.formService.deletwRow(rowId);
   }
 }

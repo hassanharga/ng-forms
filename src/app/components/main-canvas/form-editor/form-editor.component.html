@@ -1,4 +1,4 @@
-<div class="p-4">
+<div class="p-4 flex gap-4 flex-col">
   @for (row of formService.rows(); track row.id) {
   <div
     class="p-5 pt-2 bg-white rounded-lg border border-dashed border-gray-200"
@@ -6,7 +6,16 @@
     (cdkDropListDropped)="onDropInRow($event, row.id)"
     [cdkDropListOrientation]="'mixed'"
   >
-    <div>Row</div>
+    <div class="flex justify-between items-center">
+      <span>Row</span>
+      <button
+        mat-icon-button
+        (click)="deleteRow(row.id)"
+        class="hover:bg-gray-100 rounded-full"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     <div class="flex gap-4 flex-wrap">
       @for (field of row.fields; track field.id) {
       <app-form-field class="flex-1" [field]="field" />
