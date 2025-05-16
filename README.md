@@ -1,59 +1,88 @@
 # NgForms
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.10.
+A dynamic form builder application built with Angular that allows users to create, customize, and preview forms with various field types. This interactive tool provides a drag-and-drop interface for form creation with real-time preview capabilities.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Drag-and-drop form building** with Angular CDK
+- **Multiple field types** including:
+  - Text fields
+  - Checkbox fields
+  - Select/dropdown fields
+- **Field customization options** through a dedicated settings panel
+- **Real-time form preview** capability
+- **Custom theming** support with a green theme option
+
+## Installation & Setup
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+# or with pnpm
+pnpm install
+```
+
+3. Start the development server:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+4. Open your browser and navigate to `http://localhost:4200/`
 
-## Code scaffolding
+## Building & Testing
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+To build the project:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+To run unit tests:
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## Styling
 
-For end-to-end (e2e) testing, run:
+This project uses a combination of:
 
-```bash
-ng e2e
-```
+- Tailwind CSS for utility-first styling
+- Angular Material for UI components
+- Custom theme variables for consistent design
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Project Architecture
 
-## Additional Resources
+The application follows a modular architecture:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Components**:
+
+  - `field-settings`: Configures properties for form fields
+  - `field-types`: Contains implementations for different field types
+  - `form-elements-menu`: Sidebar menu with available field elements
+  - `main-canvas`: Main editor area with form builder and preview
+
+- **Services**:
+
+  - `field-types.service.ts`: Manages available field types
+  - `form.service.ts`: Handles form state and operations
+
+- **Models**:
+  - `field.ts`: Defines field data structure
+  - `form.ts`: Defines overall form structure
+
+## Technologies
+
+- **Angular 19**: Frontend framework
+- **Angular Material**: UI component library
+- **Angular CDK**: Drag and drop functionality
+- **Tailwind CSS**: Utility-first styling
+
+Configuration files:
+
+- `tailwind.css` - Contains theme variables
+- `styles.scss` - Imports styling configurations
+- `greentheme.css` - Custom theme implementation
