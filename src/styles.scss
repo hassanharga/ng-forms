@@ -4,15 +4,7 @@
 
 @use "@angular/material" as mat;
 
-html {
-  // color-scheme: light;
-  @include mat.theme(
-    (
-      color: mat.$azure-palette,
-      typography: Roboto,
-    )
-  );
-}
+@use "./app/themes/greentheme.css";
 
 html,
 body {
@@ -24,6 +16,23 @@ body {
 }
 
 .cdk-drop-list-dragging:not(.elements-menu) {
-  border: 2px solid !important;
+  border: 2px solid lightgray !important;
   background-color: lightgray !important;
+}
+
+.compact-button {
+  @include mat.button-overrides(
+    (
+      filled-container-height: 36px,
+      filled-container-shape: 5px,
+    )
+  );
+}
+
+mat-form-field {
+  @include mat.theme(
+    (
+      density: -3,
+    )
+  );
 }

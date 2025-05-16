@@ -1,8 +1,10 @@
 <div
-  class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:border-black cursor-pointer pt-1"
+  class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:border-primary cursor-pointer pt-1"
   (click)="formService.setSelectedField(field().id)"
   [class]="
-    formService.selectedField()?.id === field().id ? '!border-black' : ''
+    formService.selectedField()?.id === field().id
+      ? '!border-primary !bg-background'
+      : ''
   "
 >
   <div class="flex items-center justify-between mb-1">

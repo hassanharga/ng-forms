@@ -1,7 +1,9 @@
-<div class="flex flex-col h-screen bg-gray-100 px-4">
+<div class="flex flex-col h-screen bg-background px-4">
   <div class="flex flex-col gap-1 items-center justify-center py-10">
-    <h1 class="text-2xl tracking-wide font-medium">Angular Forms Designer</h1>
-    <p class="text-gray-500 text-sm">
+    <h1 class="text-2xl text-primary tracking-wide font-medium">
+      Angular Forms Designer
+    </h1>
+    <p class="text-on-background text-sm">
       Create beautiful, responsive forms with Angular Material and Tailwind CSS
     </p>
   </div>
@@ -11,7 +13,7 @@
     <app-field-settings class="w-64" />
     <button
       mat-flat-button
-      class="!absolute -top-[50px] right-0"
+      class="!absolute -top-[50px] right-0 compact-button"
       (click)="formService.exportForm()"
     >
       Export Form

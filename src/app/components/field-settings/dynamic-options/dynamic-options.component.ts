@@ -9,7 +9,16 @@ import { OptionItem } from '../../../models/field';
   selector: 'app-dynamic-options',
   imports: [MatIcon, MatFormFieldModule, FormsModule, MatInput],
   templateUrl: './dynamic-options.component.html',
-  styles: ``,
+  styles: `
+    @use '@angular/material' as mat;
+    mat-form-field {
+      @include mat.theme(
+        (
+          density: -5,
+        )
+      );
+    }
+  `,
 })
 export class DynamicOptionsComponent {
   title = input('');
