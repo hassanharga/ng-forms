@@ -6,6 +6,7 @@
       [cdkDropListData]="row.id"
       (cdkDropListDropped)="onDropInRow($event, row.id)"
       [cdkDropListOrientation]="'mixed'"
+      [style.view-transition-name]="'row-' + row.id"
     >
       <div class="flex justify-between items-center">
         <span class="text-primary">Row</span>
@@ -24,6 +25,8 @@
             [cdkDragData]="field"
             class="flex-1"
             [field]="field"
+            [style.view-transition-name]="'field-' + field.id"
+            [style.view-transition-class]="'field-transition'"
           />
         } @empty {
           <div

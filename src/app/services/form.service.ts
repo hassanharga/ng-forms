@@ -1,6 +1,13 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import {
+  ApplicationRef,
+  computed,
+  inject,
+  Injectable,
+  signal,
+} from '@angular/core';
 import { FormField } from '../models/field';
 import { FormRow } from '../models/form';
+import { startViewTransition } from '../utils/view-transition';
 import { FieldTypesService } from './field-types.service';
 
 @Injectable({
@@ -8,6 +15,8 @@ import { FieldTypesService } from './field-types.service';
 })
 export class FormService {
   fieldTypesService = inject(FieldTypesService);
+  appRef = inject(ApplicationRef);
+
   #rows = signal<FormRow[]>([]);
   // #selectedRowId = signal<string | null>(null);
   #selectedFieldId = signal<string | null>(null);
@@ -43,7 +52,9 @@ export class FormService {
       return row;
     });
 
-    this.#rows.set(newRows);
+    startViewTransition(() => {
+      this.#rows.set(newRows);
+    });
   }
 
   removeField(fieldId: string) {
@@ -53,7 +64,10 @@ export class FormService {
       return { ...row, fields: newFields };
     });
 
-    this.#rows.set(newRows);
+    startViewTransition(() => {
+      this.#rows.set(newRows);
+      this.appRef.tick();
+    });
   }
 
   addRow() {
@@ -61,15 +75,20 @@ export class FormService {
       id: crypto.randomUUID(),
       fields: [],
     };
-    this.#rows.update((rows) => [...rows, newRow]);
+    startViewTransition(() => {
+      this.#rows.update((rows) => [...rows, newRow]);
+    });
   }
 
-  deletwRow(rowId: string) {
+  deleteRow(rowId: string) {
     if (this.#rows().length === 1) {
       return;
     }
     const newRows = this.#rows().filter((row) => row.id !== rowId);
-    this.#rows.set(newRows);
+    startViewTransition(() => {
+      this.#rows.set(newRows);
+      this.appRef.tick();
+    });
   }
 
   moveField(
@@ -78,40 +97,43 @@ export class FormService {
     targetRowId: string,
     targetIndex = -1,
   ) {
-    const r = [...this.#rows()];
+    startViewTransition(() => {
+      const r = [...this.#rows()];
 
-    let fieldToMove: FormField | undefined;
-    let sourceRowIndex = -1;
-    let sourceFieldIndex = -1;
+      let fieldToMove: FormField | undefined;
+      let sourceRowIndex = -1;
+      let sourceFieldIndex = -1;
 
-    r.forEach((row, rowIndex) => {
-      if (row.id === sourceRowId) {
-        sourceRowIndex = rowIndex;
-        sourceFieldIndex = row.fields.findIndex(
-          (field) => field.id === fieldId,
-        );
-        if (sourceFieldIndex >= 0) {
-          fieldToMove = row.fields[sourceFieldIndex];
+      r.forEach((row, rowIndex) => {
+        if (row.id === sourceRowId) {
+          sourceRowIndex = rowIndex;
+          sourceFieldIndex = row.fields.findIndex(
+            (field) => field.id === fieldId,
+          );
+          if (sourceFieldIndex >= 0) {
+            fieldToMove = row.fields[sourceFieldIndex];
+          }
         }
+      });
+
+      if (!fieldToMove) return;
+
+      const newRows = [...r];
+      const fieldsWithRemovedField = newRows[sourceRowIndex].fields.filter(
+        (field) => field.id !== fieldId,
+      );
+      newRows[sourceRowIndex].fields = fieldsWithRemovedField;
+
+      const targetRowIndex = newRows.findIndex((row) => row.id === targetRowId);
+      if (targetRowIndex >= 0) {
+        const targetFields = [...newRows[targetRowIndex].fields];
+        targetFields.splice(targetIndex, 0, fieldToMove);
+        newRows[targetRowIndex].fields = targetFields;
       }
+
+      this.#rows.set(newRows);
+      this.appRef.tick();
     });
-
-    if (!fieldToMove) return;
-
-    const newRows = [...r];
-    const fieldsWithRemovedField = newRows[sourceRowIndex].fields.filter(
-      (field) => field.id !== fieldId,
-    );
-    newRows[sourceRowIndex].fields = fieldsWithRemovedField;
-
-    const targetRowIndex = newRows.findIndex((row) => row.id === targetRowId);
-    if (targetRowIndex >= 0) {
-      const targetFields = [...newRows[targetRowIndex].fields];
-      targetFields.splice(targetIndex, 0, fieldToMove);
-      newRows[targetRowIndex].fields = targetFields;
-    }
-
-    this.#rows.set(newRows);
   }
 
   setSelectedField(fieldId: string | null) {
@@ -140,7 +162,10 @@ export class FormService {
       const newRows = [...r];
       const [movedRow] = newRows.splice(rowIndex, 1);
       newRows.splice(rowIndex - 1, 0, movedRow);
-      this.#rows.set(newRows);
+
+      startViewTransition(() => {
+        this.#rows.set(newRows);
+      });
     }
   }
 
@@ -151,7 +176,9 @@ export class FormService {
       const newRows = [...r];
       const [movedRow] = newRows.splice(rowIndex, 1);
       newRows.splice(rowIndex + 1, 0, movedRow);
-      this.#rows.set(newRows);
+      startViewTransition(() => {
+        this.#rows.set(newRows);
+      });
     }
   }
 

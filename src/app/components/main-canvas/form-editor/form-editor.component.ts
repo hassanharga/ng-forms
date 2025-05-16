@@ -36,11 +36,11 @@ export class FormEditorComponent {
       dragData.id,
       previousRowId,
       rowId,
-      e.currentIndex
+      e.currentIndex,
     );
   }
 
   deleteRow(rowId: string) {
-    this.formService.deletwRow(rowId);
+    this.formService.deleteRow(rowId);
   }
 }
