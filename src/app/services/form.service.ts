@@ -1,11 +1,13 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { FormField } from '../models/field';
 import { FormRow } from '../models/form';
+import { FieldTypesService } from './field-types.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormService {
+  fieldTypesService = inject(FieldTypesService);
   #rows = signal<FormRow[]>([]);
   // #selectedRowId = signal<string | null>(null);
   #selectedFieldId = signal<string | null>(null);
@@ -129,5 +131,121 @@ export class FormService {
     }));
 
     this.#rows.set(newRows);
+  }
+
+  moveRowUp(rowId: string) {
+    const r = this.#rows();
+    const rowIndex = r.findIndex((row) => row.id === rowId);
+    if (rowIndex > 0) {
+      const newRows = [...r];
+      const [movedRow] = newRows.splice(rowIndex, 1);
+      newRows.splice(rowIndex - 1, 0, movedRow);
+      this.#rows.set(newRows);
+    }
+  }
+
+  moveRowDown(rowId: string) {
+    const r = this.#rows();
+    const rowIndex = r.findIndex((row) => row.id === rowId);
+    if (rowIndex < r.length - 1) {
+      const newRows = [...r];
+      const [movedRow] = newRows.splice(rowIndex, 1);
+      newRows.splice(rowIndex + 1, 0, movedRow);
+      this.#rows.set(newRows);
+    }
+  }
+
+  // export  related
+  exportForm() {
+    const formCode = this.generateFormCode();
+    const blob = new Blob([formCode], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'form.ts';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  generateFormCode(): string {
+    let code = this.generateImports();
+    code += this.generateDecorators();
+
+    return code;
+  }
+
+  generateImports(): string {
+    return `import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormGroup } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+      `;
+  }
+
+  generateDecorators(): string {
+    // ,
+    return `
+@Component({
+  selector: 'app-generated-form',
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+  ],
+  template: \`${this.generateTemplate()}\`
+})
+export class GeneratedFormComponent {}
+    `;
+  }
+
+  generateTemplate(): string {
+    return `
+      <form class="flex flex-col gap-4">
+        ${this.generateFormFields()}
+      </form>
+    `;
+  }
+
+  generateFormFields(): string {
+    let formFields = '';
+    this.#rows()
+      .filter((row) => row.fields.length > 0)
+      .forEach((row) => {
+        formFields += `
+          <div class="flex flex-wrap gap-4">
+          ${row.fields
+            .map((field) => {
+              return `
+                <div class="flex-1">
+                  ${this.generateFieldCode(field)}
+                </div>
+              `;
+            })
+            .join('\n')}
+          </div>
+        `;
+      });
+
+    return formFields;
+  }
+
+  generateFieldCode(field: FormField): string {
+    const fieldDef = this.fieldTypesService.getFieldType(field.type);
+    if (!fieldDef) return '';
+
+    return fieldDef.generateCode(field);
   }
 }
